@@ -40,11 +40,19 @@
 
         }
 
+        .memberlist {
+            display: flex;
+            flex-direction: row;
+            margin: auto;
+        }
+
         .mycards .card {
             background-color: #f5f5f5;
             color: white;
             text-align: center;
             padding: 20px;
+            display: inline-block; 
+            width: 240px; 
         }
 
         .mycards .card .card-name,
@@ -478,7 +486,7 @@
 
 </div>
 <div class="mycards">
-    <div class="row row-cols-1 row-cols-md-5 g-4" id="memberList">
+    <div class="memberlist" id="memberList">
 
 
     </div>
