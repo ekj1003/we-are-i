@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이들 소개</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+            color: black;
+        }
+
+        .main {
+            background-color: white;
+            color: black;
+            background-image: url('https://imgmmw.mbn.co.kr/storage/news/2022/09/13/af02ed45d74d483a89d1788ff4c6ac3d.jpg');
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            height: 50vh;
+        }
+        body {
+            background-color: white;
+        }
+
+        .mycards {
+            width: 1200px;
+            margin: 20px auto 90px auto;  /* 하단 margin값 수정 */
+        }
+
+        .mycards .card {
+            background-color: #f5f5f5;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .mycards .card .card-name,
+        .mycards .card .card-mbti {
+            margin-bottom: 0;
+        }
+
+        .introducebox {
+            width: 500px;
+            margin: 20px auto;
+            border: 1px solid black;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .form-control {
+            font-size: 14px;
+        }
+
+        .form-floating>input {
+            background-color: transparent;
+            color: black;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-floating>label {
+            color: black;
+        }
+
+        .input-group>label {
+            background-color: transparent;
+            color: black;
+        }
+
+        .guestbook {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .guestbook form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .guestbook .form-group {
+            flex: 1;
+        }
+
+        .guestbook form button {
+            margin-left: auto;
+            background-color: #e9ecef;
+
+            border: none;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .center-text {
+            display: flex;
+            justify-content: center;
+        }
+
+        .highlight-text {
+            font-size: 4em;
+            font-weight: bold;
+        }
+
+        .subheading {
+            font-weight: 200;
+        }
+
+        #entries-list {
+            text-align: left;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #entries-list li {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .entry-item {
+            text-decoration: underline;
+        }
+
+        .entry-item .username {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .entry-item .entry-actions {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .entry-item .entry-actions button {
+            margin-left: 5px;
+        }
+
+        .additional-info {
+            display: none;
+        }
+
+        .card-body button {
+            margin-top: 10px;
+        }
+    </style>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import {
+            collection,
+            doc,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase 구성 정보 설정
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSL5LX_2P0Er02VRH7KRP017Xo8hoKHAo",
+            authDomain: "sparta-25f43.firebaseapp.com",
+            projectId: "sparta-25f43",
+            storageBucket: "sparta-25f43.appspot.com",
+            messagingSenderId: "509060407358",
+            appId: "1:509060407358:web:02fabae90c30c4418cf16f",
+            measurementId: "G-NSQY74906J",
+        };
+
+        // Firebase 인스턴스 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 팀원 리스트
+        try {
+
+            // 컬렉션명 셋팅
+            let colectionName = "we-are-i";
+
+            // Firebase 인스턴스 초기화
+            let app = initializeApp(firebaseConfig);
+            let db = getFirestore(app);
+
+            let docs = await getDocs(collection(db, colectionName));
+            docs.forEach((doc) => {
+                let row = doc.data();
+
+                let url = "we_are_i/personpage.html?userKey=" + doc.id;
+
+                let memberTemplate = `<div class="col">
+                    <div class="card h-100">
+                        <img src="${row.image}" class="card-img-top" alt="..." style="height : 200px">
+                        <div class="card-body">
+                            <h5 class="card-name">${row.name}</h5>
+                            <p class="card-mbti">${row.mbti}</p>
+                            <a href="/${url}" target="_blank" class="btn btn-secondary mt-2">더보기</a>
+                            <div class="additional-info mt-2" style="display: none;">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+
+                let membersNameTemplate = `<li><a href="/${url}" class="nav-link px-2 text-black">${row.name}</a></li>`;
+
+                $('#memberList').append(memberTemplate);
+
+                $('#membersNameList').append(membersNameTemplate)
+            });
+
+        } catch (e) {
+            console.log("페이지 오류 발생 : " + e.message)
+            alert("페이지에 치명적인 오류가 발생하였습니다. 죄송합니다.")
+        }
+
+
+        // 아이디, 비밀번호, content 입력
+        $("#postGuestBook").click(async function () {
+            let userName = $("#username").val();
+            let password = $("#password").val();
+            let content = $("#message").val();
+
+            let date = (() => {
+                const date = new Date();
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+
+                let nowHours = date.getHours();
+                let nowMins = date.getMinutes();
+                let nowSec = date.getSeconds();
+
+                return `${year}-${month}-${day} ${nowHours}:${nowMins}:${nowSec}`;
+            })();
+
+            let doc = {
+                userName: userName,
+                password: password,
+                content: content,
+                date: date,
+            };
+            await addDoc(collection(db, "guest-book"), doc);
+            alert("방명록 저장 완료!");
+            window.location.reload();
+        });
+
+        // Firestore 컬렉션 참조
+        const guestBookRef = collection(db, "guest-book");
+
+        // 날짜별로 정렬된 쿼리 생성
+        const q = query(guestBookRef, orderBy("date", "desc"));
+
+        // 쿼리를 실행하여 문서 가져오기
+        const docs = await getDocs(q);
+
+        docs.forEach((doc) => {
+            let row = doc.data();
+            console.log(row["date"]);
+            let userName = row["userName"];
+            let password = row["password"];
+            let content = row["content"];
+            let date = row["date"];
+
+            // 새로운 방명록 항목 넣기
+            let temp_html = `
+              <li class="entry-item">
+                  <span class="username">${userName}:</span>
+                  <span class="content">${content}</span>
+                  <span class="entry-actions">
+                      <button class="btn btn-sm btn-info btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal" data-bs-updateId="${doc.id}" data-bs-content="${content}">수정</button>
+                      <button class="btn btn-sm btn-danger btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-deleteId="${doc.id}">삭제</button>
+                  </span>
+                  <br/>
+                  <br/>
+              </li>
+          `;
+            $("#entries-list").append(temp_html);
+        });
+
+
+        $("#update").on("click", async function () {
+            // 해당 방명록의 고유 id
+            const primaryKey = $("#updateId").val();
+
+            // 사용자가 입력한 비밀번호
+            const userInputPassword = $("#updatePassword").val();
+
+            let docRef = "";
+            let docSnapshot = "";
+
+            let colectionName = "guest-book";
+
+            try {
+                // 특정 문서 참조
+                docRef = doc(db, colectionName, primaryKey);
+
+                // 문서 가져오기
+                docSnapshot = await getDoc(docRef);
+            } catch (e) {
+                console.log("문서 가져오기 오류 : " + e.message);
+                alert("방명록을 가져오는중 알수없는 오류가 확인되었습니다.");
+                return false;
+            }
+
+            if (docSnapshot.exists()) {
+                // 문서 데이터
+                const docData = docSnapshot.data();
+
+                // 문서에서 비밀번호가 있는지 확인
+
+                if (userInputPassword === docData["password"]) {
+                    try {
+                        // 어떤 데이터를 수정할지에 대한 셋팅
+                        const washingtonRef = doc(db, colectionName, primaryKey);
+
+                        // 사용자가 수정한 내용
+                        const newCommnet = $("#updateContent").val();
+
+                        // update
+                        await updateDoc(washingtonRef, {
+                            content: newCommnet,
+                        });
+
+                        // 수정 완료
+                        alert("수정되었습니다");
+
+                        window.location.reload();
+                    } catch (e) {
+                        console.log("수정 오류 : " + e.message);
+                        alert("수정을 하는 도중 알수없는 오류가 확인되었습니다.");
+                        return false;
+                    }
+                } else {
+                    // 비밀번호 일치하지 않는 경우
+                    alert("입력 정보가 틀렸습니다");
+                }
+
+            } else {
+                alert("방명록이 존재하지 않습니다.");
+            }
+        });
+
+        $("#delete").on("click", async function () {
+            // 해당 방명록의 고유 id
+            const primaryKey = $("#deleteId").val();
+
+            // 사용자가 입력한 비밀번호
+            const userInputPassword = $("#deletePassword").val();
+
+            let docRef = "";
+            let docSnapshot = "";
+
+            let colectionName = "guest-book";
+
+            try {
+                // 특정 문서 참조
+                docRef = doc(db, colectionName, primaryKey);
+
+                // 문서 가져오기
+                docSnapshot = await getDoc(docRef);
+            } catch (e) {
+                console.log("문서 가져오기 오류 : " + e.message);
+                alert("방명록을 가져오는중 알수없는 오류가 확인되었습니다.");
+                return false;
+            }
+
+            if (docSnapshot.exists()) {
+                // 문서 데이터
+                const docData = docSnapshot.data();
+
+                // 문서에서 비밀번호가 있는지 확인
+
+                if (userInputPassword === docData["password"]) {
+                    try {
+                        // 어떤 데이터를 수정할지에 대한 셋팅
+                        const washingtonRef = doc(db, colectionName, primaryKey);
+
+                        // update
+                        await deleteDoc(washingtonRef);
+
+                        // 수정 완료
+                        alert("삭제되었습니다");
+
+                        window.location.reload();
+                    } catch (e) {
+                        console.log("삭제 오류 : " + e.message);
+                        alert("삭제를 하는 도중 알수없는 오류가 확인되었습니다.");
+                        return false;
+                    }
+                } else {
+                    // 비밀번호 일치하지 않는 경우
+                    alert("입력 정보가 틀렸습니다");
+                }
+
+            } else {
+                alert("방명록이 존재하지 않습니다.");
+            }
+        });
+
+    </script>
+</head>
+
+<body>
+    <header class="p-3 text-bg-dark" style="background-color: white; color: black;">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text- text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" id="membersNameList">
+                    <li><a href="javascript:void(0)" class="nav-link px-2 text-black">아이들</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="main">
+        <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+            <div class="container-fluid py-5">
+            </div>
+        </div>
+    </div>
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-5 g-4" id="memberList">
+
+        </div>
+    </div>
+    </div>
+    <div class="guestbook">
+        <h3 class="center-text highlight-text">방명록</h3>
+        <div class="guestbook-inner">
+            <form id="guestbook-form">
+                <div class="form-group">
+                    <label for="username" class="form-label"></label>
+                    <input type="text" class="form-control" id="username" placeholder="아이디를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label"></label>
+                    <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <div class="form-group" style="flex: 100%; margin-top: 10px;">
+                    <label for="message" class="form-label"></label>
+                    <textarea class="form-control" id="message" rows="3" placeholder="내용을 입력하세요" style="width: 100%;"
+                        required></textarea>
+                </div>
+                <button id="postGuestBook" type="button" class="btn btn-primary">등록</button>
+            </form>
+        </div>
+        <div id="guestbook-entries" class="mt-4">
+            <h4>작성된 방명록</h4>
+            <ul id="entries-list" class="list-unstyled">
+                <!-- 방명록 항목이 여기에 추가됩니다 -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <input id="updateId" value="" type="hidden">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="updateModalLabel">방명록 수정하기</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="updatePassword" class="col-form-label">비밀번호</label>
+                            <input type="text" class="form-control" id="updatePassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateContent" class="col-form-label">Message:</label>
+                            <textarea class="form-control" id="updateContent"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" id="update">수정하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <input id="deleteId" value="" type="hidden">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">방명록 삭제하기</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="deletePassword" class="col-form-label">비밀번호</label>
+                            <input type="text" class="form-control" id="deletePassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" id="delete">삭제하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 나중에 지우기 -->
+    <!-- <script>
+        document.getElementById('guestbook-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+
+            // 입력된 데이터 가져오기
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message').value;
+
+            // 새로운 방명록 항목 생성
+            const entry = document.createElement('li');
+            entry.innerHTML = `
+                <span class="username">${username}</span>: ${message}
+                <span class="entry-actions">
+                    <button class="btn btn-sm btn-info" onclick="editEntry(this)">수정</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEntry(this)">삭제</button>
+                </span>`;
+            entry.classList.add('entry-item'); // 밑줄 추가
+
+            // 방명록 항목 추가
+            const entriesList = document.getElementById('entries-list');
+            entriesList.appendChild(entry);
+
+            // 폼 입력값 초기화
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('message').value = '';
+        });
+
+        function editEntry(button) {
+            const entry = button.closest('li');
+            const message = entry.textContent.trim().split(':')[1].trim(); // 기존 메시지 추출
+            const newMessage = prompt('수정할 내용을 입력하세요:', message);
+            if (newMessage !== null) {
+                // 사용자가 취소하지 않고 내용을 입력한 경우
+                entry.innerHTML = `
+                    <span class="username">${entry.querySelector('.username').textContent}</span>: ${newMessage}
+                    <span class="entry-actions">
+                        <button class="btn btn-sm btn-info" onclick="editEntry(this)">수정</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteEntry(this)">삭제</button>
+                    </span>`;
+            }
+        }
+
+        function deleteEntry(button) {
+            const entry = button.closest('li');
+            if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+                entry.remove();
+            }
+        }
+    </script> -->
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-0S7lYm3Np5yDitzyiJr3vB9FIRBmNaozY/HjZytlOx+6eXWS/9JnSWRJ1klFz/0V"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-vrZcYApWZga4GzpAqBWDBzVd2xF+AWq3rL4bFdFiQs3KpAqji/bBckM1BuzsISpZ"
+        crossorigin="anonymous"></script> -->
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var updateModal = document.getElementById('updateModal');
+            var deleteModal = document.getElementById('deleteModal');
+
+
+            // 모달이 열릴 때 실행되는 이벤트 핸들러
+            updateModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-bs-updateId');
+
+                var content = button.getAttribute('data-bs-content')
+
+                $('#updateId').val(id);
+                $('#updateContent').val(content);
+            });
+
+            // 모달이 열릴 때 실행되는 이벤트 핸들러
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-bs-deleteId');
+
+                $('#deleteId').val(id);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
