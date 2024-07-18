@@ -82,6 +82,7 @@
             measurementId: "G-NSQY74906J"
         };
 
+        //상단바에서 팀원이름 눌렀을 때 각 페이지로 이동하는 코드
         // 상세페이지의 팀원 정보 
         let userData = "";
 
@@ -126,6 +127,7 @@
                 let url = window.location.pathname + "?userKey=" + data.userKey;
                 $('#members_name').append(`<li><a href="${url}" class="nav-link px-2 text-black">${data.name}</a></li>`)
             })
+
 
             Object.keys(userData).forEach(data => {
                 if(data == 'image'){
