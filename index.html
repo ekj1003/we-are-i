@@ -23,25 +23,14 @@
         .main {
             background-color: white;
             color: black;
-            background-position: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-            height: 50vh;
-            clear:both;
-        }
-        .main2 {
-            height: 500px;
-            margin: auto;
+            height: 400px;
             padding-top: 0px;
-            float:none;
-
-        }
+        } 
 
         .mainimage {
             display: flex;
-            margin: 50px auto 50px auto;
-            height: 400px;
-            width: auto;
+            margin: 50px auto 20px auto;
+            height: 380px;
         }
 
         body {
@@ -56,8 +45,8 @@
         .memberlist {
             display: flex;
             flex-direction: row;
-            margin: 200px auto 0px auto;
-            clear:none;
+            margin: 100px auto 0px auto;
+            clear: none;
         }
 
         .mycards .card {
@@ -105,7 +94,7 @@
         }
 
         .guestbook {
-            margin: 20px auto;
+            margin: 60px auto;
             max-width: 600px;
             text-align: left;
         }
@@ -192,9 +181,6 @@
             font-weight: bold;
             font-size: 4em;
         }
-
-
-
         .team-info {
             max-width: 800px;
             margin: 0 auto 20px;
@@ -212,6 +198,7 @@
             text-align: left;
         }
     </style>
+
     <script type="module">
         // Firebase SDK 라이브러리 가져오기
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -275,9 +262,9 @@
 
                 let membersNameTemplate = `<li><a href="/${url}" class="nav-link px-2 text-black">${row.name}</a></li>`;
 
-                $('#memberList').append(memberTemplate); //멤버리스트에 멤버템플릿 붙여줘
+                $('#memberList').append(memberTemplate);
 
-                $('#membersNameList').append(membersNameTemplate) //상단바의 멤버이름리스트에 멤버네임템플릿 붙여줘
+                $('#membersNameList').append(membersNameTemplate);
             });
 
         } catch (e) {
@@ -285,14 +272,14 @@
             alert("페이지에 치명적인 오류가 발생하였습니다. 죄송합니다.")
         }
 
-        //방명록 작성란
+        
         // 아이디, 비밀번호, content 입력
-        $("#postGuestBook").click(async function () {    //postGuestBook은 작성란 '등록' 버튼 아이디
+        $("#postGuestBook").click(async function () { 
             let userName = $("#username").val();
             let password = $("#password").val();
             let content = $("#message").val();
 
-            let date = (() => {                   //현재 날짜 시간 불러오는 코드
+            let date = (() => {  
                 const date = new Date();
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -352,48 +339,15 @@
         });
 
 
+        //팀 소개 정보 가져오기
         try {
-
             let colectionName = "teaminfo_test";
-
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
 
             let docs = await getDocs(collection(db, colectionName));
             docs.forEach((doc) => {
                 let row = doc.data();
                 let team_name = row["team_name"];
                 let image = row["image"];
-
-                let temp_html = `
-                 <div class="main2">
-                    <div class="main3">
-                        <img src="${image}" class="mainimage" alt="...">
-                        <div class="team-info">
-                            <h2>${team_name}</h2>
-                        </div>
-                    </div>
-                </div>
-
-               `;
-                $("#main").append(temp_html);
-
-            }) } catch (e) {
-                console.log("페이지 오류 발생 : " + e.message)
-                alert("페이지에 치명적인 오류가 발생하였습니다. 죄송합니다.")
-            }
-
-
-        try {
-
-            let colectionName = "teaminfo_test";
-
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-
-            let docs = await getDocs(collection(db, colectionName));
-            docs.forEach((doc) => {
-                let row = doc.data();
                 let team_introduce = row["team_introduce"];
                 let team_goal = row["team_goal"];
                 let team_promise = row["team_promise"];
@@ -405,36 +359,46 @@
                 let team_promise6 = row["team_promise6"];
 
                 let temp_html = `
-        <div class="team-info-section1">
-            <h3>팀 소개</h3>
-            <p>${team_introduce}</p>
-        </div>
-
-        <div class="team-info-section2">
-            <h3>팀 목표</h3>
-            <p>${team_goal}</p>
-        </div>
-
-        <div class="team-info-section3">
-            <h3>팀 약속</h3>
-            <ul> ${team_promise} <br>
-                ${team_promise1}<br>
-                ${team_promise2}<br>
-                ${team_promise3}<br>
-                ${team_promise4}<br>
-                ${team_promise5}<br>
-                ${team_promise6}
-            </ul>
-        </div>`;
-        $("#team-info-section").append(temp_html);
-
-            }) } catch (e) {
-                console.log("페이지 오류 발생 : " + e.message)
-                alert("페이지에 치명적인 오류가 발생하였습니다. 죄송합니다.")
-            }
+                    <img src="${image}" class="mainimage" alt="...">
+                    <div class="team-info">
+                        <h2>${team_name}</h2>
+                    </div>
+                </div> `;
+                $("#main").append(temp_html);
 
 
-        $("#update").on("click", async function () {    //방명록 수정하기 눌렀을 때
+                let temp_html2 = `
+                <div class="team-info-section1">
+                    <h3>팀 소개</h3>
+                    <p>${team_introduce}</p>
+                </div>
+
+                 <div class="team-info-section2">
+                    <h3>팀 목표</h3>
+                     <p>${team_goal}</p>
+                </div>
+
+                <div class="team-info-section3">
+                     <h3>팀 약속</h3>
+                    <ul>
+                        <li> ${team_promise} </li>
+                        <li> ${team_promise1}</li>
+                        <li> ${team_promise2}</li>
+                        <li>${team_promise3}</li>
+                        <li> ${team_promise4}</li>
+                        <li>${team_promise5}</li>
+                        <li>${team_promise6}</li>
+                    </ul>
+                </div>`;
+                $("#team-info-section").append(temp_html2);
+            })
+        } catch (e) {
+            console.log("페이지 오류 발생 : " + e.message)
+            alert("페이지에 치명적인 오류가 발생하였습니다. 죄송합니다.")
+        }
+
+
+        $("#update").on("click", async function () {    
             // 해당 방명록의 고유 id
             const primaryKey = $("#updateId").val();
 
@@ -451,7 +415,7 @@
                 docRef = doc(db, colectionName, primaryKey);
 
                 // 문서 가져오기
-                docSnapshot = await getDoc(docRef);        //해당 방명록 가져오기
+                docSnapshot = await getDoc(docRef);  
             } catch (e) {
                 console.log("문서 가져오기 오류 : " + e.message);
                 alert("방명록을 가져오는중 알수없는 오류가 확인되었습니다.");
@@ -460,7 +424,7 @@
 
 
 
-            if (docSnapshot.exists()) {                   //해당 방명록이 존재한다면
+            if (docSnapshot.exists()) {     
                 // 문서 데이터
                 const docData = docSnapshot.data();
 
@@ -500,7 +464,7 @@
 
 
 
-        $("#delete").on("click", async function () {       //삭제 버튼을 눌렀을 때
+        $("#delete").on("click", async function () { 
             // 해당 방명록의 고유 id
             const primaryKey = $("#deleteId").val();
 
@@ -524,7 +488,7 @@
                 return false;
             }
 
-            if (docSnapshot.exists()) {          //문서가 존재한다면
+            if (docSnapshot.exists()) {  
                 // 문서 데이터
                 const docData = docSnapshot.data();
 
@@ -556,9 +520,6 @@
                 alert("방명록이 존재하지 않습니다.");
             }
         });
-
-
-
 
 
     </script>
